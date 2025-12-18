@@ -1,3 +1,4 @@
+> Рома:
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -111,30 +112,25 @@ body{
 }
 .btn:active{transform:scale(.97)}
 
+.btn.secondary{
+  background:#151515;
+  border:1px solid #2a2a2a;
+  box-shadow:none;
+}
+
+/* === НОВАЯ КНОПКА (ЗАМЕТНАЯ) === */
+.btn.pay-video{
+  background:linear-gradient(135deg,#22c55e,#16a34a);
+  box-shadow:0 10px 28px rgba(34,197,94,.55);
+  font-size:17px;
+}
+.btn.pay-video:active{transform:scale(.96)}
+
 footer{
   text-align:center;
   font-size:12px;
   opacity:.5;
   margin-top:18px;
-}
-
-/* ===== THEMES ===== */
-body[data-theme="minimal"]{
-  background:#0b0b0b;
-}
-body[data-theme="minimal"] .btn{
-  background:#00e676;
-  color:#052e16;
-  box-shadow:0 8px 20px rgba(0,230,118,.4);
-}
-
-body[data-theme="glass"] .container{
-  background:rgba(20,20,20,.7);
-  backdrop-filter:blur(12px);
-}
-
-body[data-theme="gaming"] .amount{
-  text-shadow:0 0 14px rgba(34,197,94,.9);
 }
 </style>
 </head>
@@ -175,26 +171,22 @@ body[data-theme="gaming"] .amount{
 
 <div class="warning" id="warn">—</div>
 
+<!-- ✅ НОВАЯ КНОПКА (ВЫШЕ ОСТАЛЬНЫХ) -->
+<a class="btn pay-video" id="payvideo"></a>
+
 <a class="btn" id="back">🤖 </a>
+<a class="btn secondary" id="howto"></a>
 
 <footer>© 2025 FastLine VPN</footer>
 </div>
 
 <script>
-
-document.getElementById("back").addEventListener("click", function (e) {
-    e.preventDefault();
-
-    const url = "https://t.me/WebSafeTelbot";
-
-    // Telegram WebView открывает только так
-    window.open(url, "_blank");
-});
+document.getElementById("back").onclick = () => {
+  window.open("https://t.me/WebSafeTelbot", "_blank");
+};
 
 const p=new URLSearchParams(location.search);
 let lang=p.get("lang")||"ru";
-const theme=p.get("theme")||"gaming";
-document.body.dataset.theme=theme;
 
 const BANKS={
 dcity:{name:"🏦 Душанбе Сити",details:"Счёт: XXXX XXXX XXXX"},
@@ -204,47 +196,34 @@ sber:{name:"🏦 Сбербанк (СБП)",details:"QR / СБП"}
 
 const T={
 ru:{bank:"Способ оплаты",details:"Реквизиты",instr:"Инструкция",
+
+> Рома:
 i1:"1. Отправьте точную сумму.",
 i2:"2. Сделайте фото или скриншот чека.",
 i3:"3. Вернитесь в бот и отправьте чек.",
 i4:"4. VPN активируется через 5–10 минут.",
 warn:"⚠️ Неверная сумма или банк задержат активацию.",
-back:"🤖 Вернуться в бот"},
+back:"🤖 Вернуться в бот",
+howto:"📘 Как подключиться",
+payvideo:"▶️ Как оплатить (видео)"},
 tj:{bank:"Усули пардохт",details:"Маълумоти ҳисоб",instr:"Дастур",
 i1:"1. Маблағи дақиқро фиристед.",
 i2:"2. Сурат ё скриншоти чек гиред.",
 i3:"3. Ба бот баргардед ва фиристед.",
 i4:"4. VPN дар 5–10 дақиқа фаъол мешавад.",
 warn:"⚠️ Хатои маблағ ё бонк сабаби таъхир мегардад.",
-back:"🤖 Ба бот баргаштан"},
+back:"🤖 Ба бот баргаштан",
+howto:"📘 Чӣ тавр пайваст шудан",
+payvideo:"▶️ Чӣ тавр пардохт кардан (видео)"},
 en:{bank:"Payment method",details:"Payment details",instr:"Instructions",
 i1:"1. Send exact amount.",
 i2:"2. Take receipt photo.",
 i3:"3. Return to bot.",
 i4:"4. VPN activates in 5–10 minutes.",
 warn:"⚠️ Wrong amount or bank may delay activation.",
-back:"🤖 Back to bot"},
-fa:{bank:"روش پرداخت",details:"مشخصات پرداخت",instr:"راهنما",
-i1:"۱. مبلغ دقیق را ارسال کنید.",
-i2:"۲. تصویر رسید بگیرید.",
-i3:"۳. به ربات بازگردید.",
-i4:"۴. VPN تا ۱۰ دقیقه فعال می‌شود.",
-warn:"⚠️ مبلغ یا بانک اشتباه است.",
-back:"🤖 بازگشت به ربات"},
-uz:{bank:"To‘lov usuli",details:"To‘lov maʼlumotlari",instr:"Yo‘riqnoma",
-i1:"1. Aniq summani yuboring.",
-i2:"2. Chek rasmini oling.",
-i3:"3. Botga qayting.",
-i4:"4. VPN 5–10 daqiqada yoqiladi.",
-warn:"⚠️ Xato summa yoki bank.",
-back:"🤖 Botga qaytish"},
-kg:{bank:"Төлөм ыкмасы",details:"Реквизиттер",instr:"Нускама",
-i1:"1. Так сумманы жибериңиз.",
-i2:"2. Чектин сүрөтүн тартыңыз.",
-i3:"3. Ботко жөнөтүңүз.",
-i4:"4. VPN 5–10 минутада иштейт.",
-warn:"⚠️ Туура эмес сумма же банк.",
-back:"🤖 Ботко кайтуу"}
+back:"🤖 Back to bot",
+howto:"📘 How to connect",
+payvideo:"▶️ How to pay (video)"},
 };
 
 function render(){
@@ -253,7 +232,6 @@ document.getElementById("t_bank").innerText=t.bank;
 document.getElementById("t_details").innerText=t.details;
 document.getElementById("t_instr").innerText=t.instr;
 ["i1","i2","i3","i4","warn"].forEach(k=>document.getElementById(k).innerText=t[k]);
-document.getElementById("back").innerText=t.back;
 
 const bank=p.get("bank");
 if(bank&&BANKS[bank]){
@@ -263,7 +241,19 @@ if(bank&&BANKS[bank]){
 
 const amount=p.get("amount");
 const cur=p.get("currency")||"";
-if(amount) document.getElementById("amount").innerText=`${amount} ${cur}`;
+if(amount) document.getElementById("amount").innerText=${amount} ${cur};
+
+document.getElementById("back").innerText=t.back;
+document.getElementById("howto").innerText=t.howto;
+document.getElementById("payvideo").innerText=t.payvideo;
+
+document.getElementById("howto").onclick=()=>{
+ window.open("https://t.me/fastline_vpn","_blank");
+};
+
+document.getElementById("payvideo").onclick=()=>{
+ window.open("https://t.me/fastline_vpn/123","_blank"); // ← ID поста с видео
+};
 
 document.querySelectorAll(".langs button").forEach(b=>{
  b.classList.toggle("active",b.dataset.lang===lang);
