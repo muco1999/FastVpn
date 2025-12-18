@@ -195,7 +195,6 @@ sber:{name:"🏦 Сбербанк (СБП)",details:"QR / СБП"}
 
 const T={
 ru:{bank:"Способ оплаты",details:"Реквизиты",instr:"Инструкция",
-
 i1:"1. Отправьте точную сумму.",
 i2:"2. Сделайте фото или скриншот чека.",
 i3:"3. Вернитесь в бот и отправьте чек.",
@@ -239,7 +238,7 @@ if(bank&&BANKS[bank]){
 
 const amount=p.get("amount");
 const cur=p.get("currency")||"";
-if(amount) document.getElementById("amount").innerText=${amount} ${cur};
+if(amount) document.getElementById("amount").innerText=`${amount} ${cur}`;
 
 document.getElementById("back").innerText=t.back;
 document.getElementById("howto").innerText=t.howto;
