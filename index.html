@@ -175,12 +175,22 @@ body[data-theme="gaming"] .amount{
 
 <div class="warning" id="warn">—</div>
 
-<a class="btn" id="back" href="tg://resolve?domain=WebSafeTelbot">🤖</a>
+<a class="btn" id="back">🤖 </a>
 
 <footer>© 2025 FastLine VPN</footer>
 </div>
 
 <script>
+
+document.getElementById("back").addEventListener("click", function (e) {
+    e.preventDefault();
+
+    const url = "https://t.me/WebSafeTelbot";
+
+    // Telegram WebView открывает только так
+    window.open(url, "_blank");
+});
+
 const p=new URLSearchParams(location.search);
 let lang=p.get("lang")||"ru";
 const theme=p.get("theme")||"gaming";
