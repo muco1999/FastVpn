@@ -1,328 +1,632 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<title>FastLine — Payment</title>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta charset="UTF-8" />
+  <title>BahromAI_VPN — Payment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-<style>
-:root{
-  --red:#ff2d2d;
-  --green:#22c55e;
-  --bg:#0b0b0b;
-  --card:#151515;
-  --border:#2a2a2a;
-}
+  <style>
+    :root{
+      --bg0:#070A12;
+      --bg1:#0B1224;
+      --card: rgba(255,255,255,.06);
+      --border: rgba(255,255,255,.14);
+      --text:#EAF0FF;
+      --muted: rgba(234,240,255,.72);
+      --good:#22c55e;
+      --warn:#ff3b3b;
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --radius: 18px;
+    }
 
-body{
-  margin:0;
-  font-family:Inter,Arial,sans-serif;
-  background:radial-gradient(circle at top,var(--red),#0f0f0f);
-  color:#fff;
-  -webkit-font-smoothing:antialiased;
-}
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1100px 600px at 10% 0%, rgba(77,163,255,.28), transparent 60%),
+        radial-gradient(900px 520px at 90% 10%, rgba(139,92,255,.22), transparent 58%),
+        radial-gradient(900px 700px at 50% 100%, rgba(34,197,94,.12), transparent 55%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      -webkit-font-smoothing: antialiased;
+      padding: 18px 14px 28px;
+    }
 
-.container{
-  max-width:420px;
-  margin:24px auto;
-  padding:20px;
-  background:var(--bg);
-  border-radius:20px;
-  box-shadow:0 20px 50px rgba(0,0,0,.65);
-}
+    .wrap{ max-width:460px; margin:0 auto; }
 
-.logo{
-  text-align:center;
-  font-size:28px;
-  font-weight:800;
-  letter-spacing:1px;
-}
-.logo span{color:var(--red)}
+    .hero{
+      position: relative;
+      border-radius: 22px;
+      overflow:hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,.10);
+      background:
+        radial-gradient(800px 300px at 10% 0%, rgba(77,163,255,.32), transparent 60%),
+        radial-gradient(700px 300px at 90% 10%, rgba(139,92,255,.25), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+    }
+    .hero-inner{
+      padding: 18px 18px 14px;
+      backdrop-filter: blur(10px);
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+    }
+    .logo{
+      font-weight: 900;
+      letter-spacing:.6px;
+      font-size: 18px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .badge{
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(77,163,255,.16);
+      border: 1px solid rgba(77,163,255,.34);
+      color: var(--text);
+      white-space:nowrap;
+    }
 
-.langs{
-  display:grid;
-  grid-template-columns:repeat(6,1fr);
-  gap:8px;
-  margin:16px 0 20px;
-}
-.langs button{
-  height:40px;
-  border-radius:10px;
-  background:var(--card);
-  border:1px solid var(--border);
-  font-size:20px;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  transition:.15s;
-}
-.langs button.active{
-  background:var(--red);
-  border-color:var(--red);
-}
-.langs button:active{transform:scale(.95)}
+    .title{ margin:14px 0 2px; font-size:26px; font-weight:900; line-height:1.05; }
+    .subtitle{ margin:0; color:var(--muted); font-size:13px; line-height:1.4; }
 
-.box{
-  background:var(--card);
-  border-radius:14px;
-  padding:14px;
-  margin-top:14px;
-}
-.box b{
-  display:block;
-  color:#ff6b6b;
-  margin-bottom:6px;
-}
+    .langs{
+      display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;
+    }
+    .langs button{
+      height: 38px;
+      padding: 0 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      color: var(--text);
+      font-size: 14px;
+      cursor: pointer;
+      transition: .15s;
+      display:flex; align-items:center; gap:8px;
+    }
+    .langs button.active{
+      background: linear-gradient(135deg, rgba(77,163,255,.35), rgba(139,92,255,.30));
+      border-color: rgba(255,255,255,.18);
+    }
+    .langs button:active{transform:scale(.98)}
 
-.amount{
-  text-align:center;
-  font-size:34px;
-  font-weight:800;
-  margin:22px 0;
-  color:var(--green);
-}
+    .card{
+      margin-top: 12px;
+      border-radius: var(--radius);
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 40px rgba(0,0,0,.25);
+      overflow:hidden;
+    }
+    .card .row{
+      padding: 14px 14px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 12px;
+    }
+    .card .row + .row{
+      border-top: 1px solid rgba(255,255,255,.10);
+    }
 
-.instruction div{margin:4px 0;font-size:14px;opacity:.95}
+    .label{
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .value{ font-weight:800; font-size:14px; line-height:1.3; }
 
-.warning{
-  margin-top:16px;
-  padding:12px;
-  border-radius:12px;
-  background:#3a0f0f;
-  border:1px solid var(--red);
-  font-size:13px;
-}
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-weight: 800;
+      font-size: 13px;
+      opacity: .98;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
 
-.btn{
-  margin-top:18px;
-  height:52px;
-  border-radius:16px;
-  background:linear-gradient(135deg,var(--red),#ff5a5a);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:800;
-  font-size:16px;
-  text-decoration:none;
-  color:#fff;
-  box-shadow:0 8px 24px rgba(255,45,45,.4);
-  transition:.15s;
-}
-.btn:active{transform:scale(.97)}
+    .amountBox{ padding: 16px 14px 14px; text-align:center; }
+    .amount{
+      font-size: 36px;
+      font-weight: 1000;
+      letter-spacing: .2px;
+      color: var(--text);
+      text-shadow: 0 0 22px rgba(77,163,255,.25);
+    }
+    .amount small{
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--muted);
+      margin-left: 6px;
+    }
 
-.btn.secondary{
-  background:#151515;
-  border:1px solid #2a2a2a;
-  box-shadow:none;
-}
+    .fx{ margin-top:10px; display:grid; gap:8px; }
+    .fxline{
+      display:flex;
+      justify-content:space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .fxline b{ color: var(--text); font-weight: 900; }
 
-/* === НОВАЯ КНОПКА (ЗАМЕТНАЯ) === */
-.btn.pay-video{
-  background:linear-gradient(135deg,#22c55e,#16a34a);
-  box-shadow:0 10px 28px rgba(34,197,94,.55);
-  font-size:17px;
-}
-.btn.pay-video:active{transform:scale(.96)}
+    .instruction{ padding:14px; }
+    .instruction .h{
+      font-weight: 900;
+      margin: 0 0 10px;
+      display:flex;
+      align-items:center;
+      gap: 10px;
+    }
+    .steps{
+      display:grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style:none;
+      color: var(--muted);
+      font-size: 13px;
+      line-height:1.35;
+    }
+    .steps li{
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+    }
 
-footer{
-  text-align:center;
-  font-size:12px;
-  opacity:.5;
-  margin-top:18px;
-}
-</style>
+    .note{
+      margin-top: 12px;
+      padding: 12px 12px;
+      border-radius: 14px;
+      background: rgba(34,197,94,.10);
+      border: 1px solid rgba(34,197,94,.30);
+      font-size: 13px;
+      color: rgba(255,255,255,.90);
+    }
+
+    .warning{
+      margin-top: 12px;
+      padding: 12px 12px;
+      border-radius: 14px;
+      background: rgba(255,59,59,.10);
+      border: 1px solid rgba(255,59,59,.30);
+      font-size: 13px;
+      color: rgba(255,255,255,.88);
+    }
+
+    .btns{ margin-top: 12px; display:grid; gap: 10px; }
+    .btn{
+      height: 52px;
+      border-radius: 16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-decoration:none;
+      font-weight: 950;
+      font-size: 15px;
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      box-shadow: 0 14px 34px rgba(0,0,0,.25);
+      transition: .15s;
+      user-select:none;
+    }
+    .btn.primary{
+      border: 1px solid rgba(77,163,255,.35);
+      background: linear-gradient(135deg, rgba(77,163,255,.40), rgba(139,92,255,.30));
+      box-shadow: 0 18px 44px rgba(77,163,255,.20);
+    }
+    .btn.good{
+      border: 1px solid rgba(34,197,94,.38);
+      background: linear-gradient(135deg, rgba(34,197,94,.42), rgba(22,163,74,.26));
+      box-shadow: 0 18px 44px rgba(34,197,94,.18);
+    }
+    .btn:active{transform:scale(.985)}
+
+    footer{
+      text-align:center;
+      font-size: 12px;
+      color: rgba(234,240,255,.55);
+      margin-top: 14px;
+    }
+
+    @media (max-width:360px){
+      .title{font-size:24px;}
+      .amount{font-size:32px;}
+      .wrap{padding:0 2px;}
+    }
+  </style>
 </head>
 
 <body>
-<div class="container">
+  <div class="wrap">
+    <div class="hero">
+      <div class="hero-inner">
+        <div class="brand">
+          <div class="logo">🤖 BahromAI_VPN</div>
+          <div class="badge" id="badge">Secure AI Payment</div>
+        </div>
 
-<div class="logo">🚀 <span>FAST</span>LINE</div>
+        <h1 class="title" id="t_title">Оплата</h1>
+        <p class="subtitle" id="t_sub">Проверь реквизиты, отправь точную сумму и вернись в бот для подтверждения.</p>
 
-<div class="langs">
-<button data-lang="ru">🇷🇺</button>
-<button data-lang="tj">🇹🇯</button>
-<button data-lang="en">🇺🇸</button>
-<button data-lang="fa">🇮🇷</button>
-<button data-lang="uz">🇺🇿</button>
-<button data-lang="kg">🇰🇬</button>
-</div>
+        <div class="langs" id="langs">
+          <button data-lang="ru">🇷🇺 RU</button>
+          <button data-lang="tj">🇹🇯 TJ</button>
+          <button data-lang="en">🇺🇸 EN</button>
+          <button data-lang="fa">🇮🇷 FA</button>
+          <button data-lang="uz">🇺🇿 UZ</button>
+          <button data-lang="kg">🇰🇬 KG</button>
+        </div>
+      </div>
+    </div>
 
-<div class="box">
-<b id="t_bank">—</b>
-<span id="bank-name">—</span>
-</div>
+    <div class="card">
+      <div class="row">
+        <div style="min-width:0">
+          <div class="label" id="t_bank">Способ оплаты</div>
+          <div class="value" id="bank-name">—</div>
+        </div>
+        <div class="mono" id="bank-icon">—</div>
+      </div>
 
-<div class="box">
-<b id="t_details">—</b>
-<span id="bank-details">—</span>
-</div>
+      <div class="row">
+        <div style="min-width:0">
+          <div class="label" id="t_details">Реквизиты</div>
+          <div class="value mono" id="bank-details">—</div>
+        </div>
+      </div>
 
-<div class="amount" id="amount">—</div>
+      <!-- ✅ новый блок: можно из любого банка -->
+      <div class="row">
+        <div style="min-width:0">
+          <div class="label" id="t_anybank">Важно</div>
+          <div class="value" id="anybank-text">—</div>
+        </div>
+      </div>
 
-<div class="box instruction">
-<b id="t_instr">—</b>
-<div id="i1"></div>
-<div id="i2"></div>
-<div id="i3"></div>
-<div id="i4"></div>
-</div>
+      <div class="amountBox">
+        <div class="amount" id="amount">—</div>
+        <div class="fx" id="fx"></div>
+      </div>
+    </div>
 
-<div class="warning" id="warn">—</div>
+    <div class="card">
+      <div class="instruction">
+        <div class="h" id="t_instr">🧾 Инструкция</div>
+        <ul class="steps">
+          <li id="i1">—</li>
+          <li id="i2">—</li>
+          <li id="i3">—</li>
+          <li id="i4">—</li>
+        </ul>
 
-<!-- ✅ НОВАЯ КНОПКА (ВЫШЕ ОСТАЛЬНЫХ) -->
-<a class="btn pay-video" id="payvideo"></a>
+        <div class="note" id="note_anybank">—</div>
+        <div class="warning" id="warn">—</div>
 
-<a class="btn" id="back">🤖 </a>
-<a class="btn secondary" id="howto"></a>
+        <div class="btns">
+          <a class="btn good" id="payvideo" href="javascript:void(0)">▶️ Как оплатить (видео)</a>
+          <a class="btn primary" id="back" href="javascript:void(0)">🤖 Вернуться в бот</a>
+          <a class="btn" id="howto" href="javascript:void(0)">📘 Как подключиться</a>
+        </div>
+      </div>
+    </div>
 
-<footer>© 2025 FastLine VPN</footer>
-</div>
+    <footer>© 2026 BahromAI_VPN</footer>
+  </div>
 
 <script>
-document.getElementById("back").onclick = () => {
-  window.open("https://t.me/WebSafeTelbot", "_blank");
-};
+  // === Links ===
+  const BOT_URL   = "https://t.me/bahromVPNbot";
+  const HOWTO_URL = "https://t.me/vpnbahrom_ai/3";
+  const VIDEO_URL = "https://t.me/vpnbahrom_ai/2";
 
-const p=new URLSearchParams(location.search);
-let lang=p.get("lang")||"ru";
+  const p = new URLSearchParams(location.search);
+  let lang = (p.get("lang") || "ru").toLowerCase();
 
-const BANKS={
-dcity:{name:"🏦 Душанбе Сити",details:"Счёт: 9762000149406398"},
-alif:{name:"🏦 Алиф Банк",details:"Счёт: YYYY YYYY YYYY"},
-sber:{name:"🏦 Сбербанк (СБП)",details:"QR / СБП"}
-};
+  // ✅ ОБНОВЛЕНО: account + phone, и общий смысл — перевод возможен из любого банка
+  const BANKS = {
+    dcity:{
+      icon:"🏦",
+      name:"Душанбе Сити",
+      account:"9762000149406398",
+      phone:"+992XXXXXXXXX"
+    },
+    alif:{
+      icon:"🏦",
+      name:"Алиф Банк",
+      account:"YYYY YYYY YYYY YYYY",
+      phone:"+992XXXXXXXXX"
+    },
+    sber:{
+      icon:"💳",
+      name:"Сбербанк (СБП)",
+      account:"—",
+      phone:"+7XXXXXXXXXX"
+    }
+  };
 
- const T = {
-ru:{
-  bank:"Способ оплаты",
-  details:"Реквизиты",
-  instr:"Инструкция",
-  i1:"1. Отправьте точную сумму.",
-  i2:"2. Сделайте фото или скриншот чека.",
-  i3:"3. Вернитесь в бот и отправьте чек.",
-  i4:"4. VPN активируется через 5–10 минут.",
-  warn:"⚠️ Неверная сумма или банк задержат активацию.",
-  back:"🤖 Вернуться в бот",
-  howto:"📘 Как подключиться",
-  payvideo:"▶️ Как оплатить (видео)"
-},
+  const T = {
+    ru:{
+      title:"Оплата",
+      sub:"Проверь реквизиты, отправь точную сумму и вернись в бот для подтверждения.",
+      bank:"Способ оплаты",
+      details:"Реквизиты",
+      anybank:"Важно",
+      anybank_text:"Перевод можно сделать <b>из любого банка</b>. Главное — отправить на указанные реквизиты.",
+      instr:"🧾 Инструкция",
+      i1:"1) Отправьте точную сумму (копейка в копейку).",
+      i2:"2) Сделайте фото/скрин чека (желательно PDF).",
+      i3:"3) Вернитесь в бот и отправьте чек.",
+      i4:"4) Подписка активируется автоматически после проверки.",
+      note_anybank:"✅ Можно платить из <b>любого банка</b>, важно только чтобы реквизиты и сумма были точными.",
+      warn:"⚠️ Неверная сумма или отсутствие чека задержат активацию.",
+      back:"🤖 Вернуться в бот",
+      howto:"📘 Как подключиться",
+      payvideo:"▶️ Как оплатить (видео)",
+      badge:"Secure AI Payment",
+      approx:"≈",
+      fxUpdated:"Курс обновлён",
+      account:"Счёт/карта",
+      phone:"Телефон"
+    },
+    tj:{
+      title:"Пардохт",
+      sub:"Реквизитҳоро санҷед, маблағи дақиқро фиристед ва барои тасдиқ ба бот баргардед.",
+      bank:"Усули пардохт",
+      details:"Реквизитҳо",
+      anybank:"Муҳим",
+      anybank_text:"Пардохтро аз <b>ҳар бонк</b> кардан мумкин аст. Муҳимаш — ба реквизитҳои нишон додашуда фиристед.",
+      instr:"🧾 Дастур",
+      i1:"1) Маблағи дақиқро фиристед (бе хато).",
+      i2:"2) Сурат/скриншоти чек гиред (беҳтараш PDF).",
+      i3:"3) Ба бот баргардед ва чекро фиристед.",
+      i4:"4) Обуна пас аз санҷиш худкор фаъол мешавад.",
+      note_anybank:"✅ Аз <b>ҳар бонк</b> пардохт кардан мумкин, аммо реквизит ва маблағ бояд дақиқ бошад.",
+      warn:"⚠️ Хатои маблағ ё набудани чек сабаби таъхир мегардад.",
+      back:"🤖 Ба бот баргаштан",
+      howto:"📘 Чӣ тавр пайваст шудан",
+      payvideo:"▶️ Чӣ тавр пардохт кардан (видео)",
+      badge:"Secure AI Payment",
+      approx:"≈",
+      fxUpdated:"Курс нав шуд",
+      account:"Ҳисоб/корт",
+      phone:"Телефон"
+    },
+    en:{
+      title:"Payment",
+      sub:"Check details, send exact amount, then return to the bot for confirmation.",
+      bank:"Payment method",
+      details:"Details",
+      anybank:"Important",
+      anybank_text:"You can pay <b>from any bank</b>. Just send to the provided details.",
+      instr:"🧾 Instructions",
+      i1:"1) Send the exact amount.",
+      i2:"2) Take a receipt photo/screenshot (PDF preferred).",
+      i3:"3) Return to the bot and send the receipt.",
+      i4:"4) Subscription activates automatically after verification.",
+      note_anybank:"✅ Payments are accepted <b>from any bank</b>. Amount and details must match.",
+      warn:"⚠️ Wrong amount or missing receipt may delay activation.",
+      back:"🤖 Back to bot",
+      howto:"📘 How to connect",
+      payvideo:"▶️ How to pay (video)",
+      badge:"Secure AI Payment",
+      approx:"≈",
+      fxUpdated:"FX updated",
+      account:"Account/card",
+      phone:"Phone"
+    },
+    fa:{
+      title:"پرداخت",
+      sub:"مشخصات را بررسی کنید، مبلغ دقیق را ارسال کنید و برای تأیید به ربات برگردید.",
+      bank:"روش پرداخت",
+      details:"جزئیات",
+      anybank:"مهم",
+      anybank_text:"پرداخت از <b>هر بانکی</b> ممکن است. فقط به این مشخصات ارسال کنید.",
+      instr:"🧾 راهنما",
+      i1:"۱) مبلغ دقیق را ارسال کنید.",
+      i2:"۲) از رسید عکس/اسکرین‌شات بگیرید (ترجیحاً PDF).",
+      i3:"۳) به ربات برگردید و رسید را ارسال کنید.",
+      i4:"۴) اشتراک بعد از بررسی خودکار فعال می‌شود.",
+      note_anybank:"✅ پرداخت از <b>هر بانکی</b> پذیرفته می‌شود. مبلغ و مشخصات باید دقیق باشد.",
+      warn:"⚠️ مبلغ اشتباه یا نبود رسید باعث تأخیر می‌شود.",
+      back:"🤖 بازگشت به ربات",
+      howto:"📘 نحوه اتصال",
+      payvideo:"▶️ نحوه پرداخت (ویدیو)",
+      badge:"Secure AI Payment",
+      approx:"≈",
+      fxUpdated:"به‌روزرسانی نرخ",
+      account:"حساب/کارت",
+      phone:"تلفن"
+    },
+    uz:{
+      title:"To‘lov",
+      sub:"Rekvizitlarni tekshiring, aniq summani yuboring va tasdiq uchun botga qayting.",
+      bank:"To‘lov usuli",
+      details:"Rekvizitlar",
+      anybank:"Muhim",
+      anybank_text:"<b>Har qanday bankdan</b> to‘lash mumkin. Asosiysi — rekvizitlarga to‘g‘ri yuboring.",
+      instr:"🧾 Yo‘riqnoma",
+      i1:"1) Aniq summani yuboring.",
+      i2:"2) Chekni rasm/skrin qilib oling (PDF yaxshi).",
+      i3:"3) Botga qaytib chekni yuboring.",
+      i4:"4) Tekshiruvdan so‘ng obuna avtomatik faollashadi.",
+      note_anybank:"✅ <b>Har qanday bankdan</b> to‘lov qabul qilinadi. Summani va rekvizitni aniq qiling.",
+      warn:"⚠️ Noto‘g‘ri summa yoki chek yo‘qligi kechikishga olib keladi.",
+      back:"🤖 Botga qaytish",
+      howto:"📘 Qanday ulaniladi",
+      payvideo:"▶️ Qanday to‘lash (video)",
+      badge:"Secure AI Payment",
+      approx:"≈",
+      fxUpdated:"Kurs yangilandi",
+      account:"Hisob/karta",
+      phone:"Telefon"
+    },
+    kg:{
+      title:"Төлөм",
+      sub:"Реквизиттерди текшериңиз, так сумманы жибериңиз жана ырастоо үчүн ботко кайтыңыз.",
+      bank:"Төлөм ыкмасы",
+      details:"Реквизиттер",
+      anybank:"Маанилүү",
+      anybank_text:"Төлөмдү <b>каалаган банктан</b> кылсаңыз болот. Негизи — реквизиттер туура болсун.",
+      instr:"🧾 Нускама",
+      i1:"1) Так сумманы жибериңиз.",
+      i2:"2) Чектин сүрөтүн/скриншотун алыңыз (PDF жакшы).",
+      i3:"3) Ботко кайтып чекти жөнөтүңүз.",
+      i4:"4) Текшерүүдөн кийин жазылуу автоматтык иштейт.",
+      note_anybank:"✅ <b>Каалаган банктан</b> төлөсөңүз болот. Сумма жана реквизит так болсун.",
+      warn:"⚠️ Туура эмес сумма же чек жок болсо — кечигүү болот.",
+      back:"🤖 Ботко кайтуу",
+      howto:"📘 Кантип туташуу",
+      payvideo:"▶️ Кантип төлөө (видео)",
+      badge:"Secure AI Payment",
+      approx:"≈",
+      fxUpdated:"Курс жаңырды",
+      account:"Эсеп/карта",
+      phone:"Телефон"
+    }
+  };
 
-tj:{
-  bank:"Усули пардохт",
-  details:"Маълумоти ҳисоб",
-  instr:"Дастур",
-  i1:"1. Маблағи дақиқро фиристед.",
-  i2:"2. Сурат ё скриншоти чек гиред.",
-  i3:"3. Ба бот баргардед ва фиристед.",
-  i4:"4. VPN дар 5–10 дақиқа фаъол мешавад.",
-  warn:"⚠️ Хатои маблағ ё бонк сабаби таъхир мегардад.",
-  back:"🤖 Ба бот баргаштан",
-  howto:"📘 Чӣ тавр пайваст шудан",
-  payvideo:"▶️ Чӣ тавр пардохт кардан (видео)"
-},
+  function safeFloat(x){
+    if(x === null || x === undefined) return null;
+    const v = Number(String(x).replace(",", "."));
+    return Number.isFinite(v) ? v : null;
+  }
 
-en:{
-  bank:"Payment method",
-  details:"Payment details",
-  instr:"Instructions",
-  i1:"1. Send exact amount.",
-  i2:"2. Take receipt photo.",
-  i3:"3. Return to bot.",
-  i4:"4. VPN activates in 5–10 minutes.",
-  warn:"⚠️ Wrong amount or bank may delay activation.",
-  back:"🤖 Back to bot",
-  howto:"📘 How to connect",
-  payvideo:"▶️ How to pay (video)"
-},
+  function fmtMoney(v, digits=2){
+    if(!Number.isFinite(v)) return "—";
+    return v.toFixed(digits);
+  }
 
-/* =========================
-   🇮🇷 PERSIAN (FA)
-   ========================= */
-fa:{
-  bank:"روش پرداخت",
-  details:"مشخصات پرداخت",
-  instr:"راهنما",
-  i1:"۱. مبلغ دقیق را ارسال کنید.",
-  i2:"۲. از رسید عکس یا اسکرین‌شات بگیرید.",
-  i3:"۳. به ربات بازگردید و رسید را ارسال کنید.",
-  i4:"۴. VPN طی ۵ تا ۱۰ دقیقه فعال می‌شود.",
-  warn:"⚠️ مبلغ یا بانک اشتباه باعث تأخیر می‌شود.",
-  back:"🤖 بازگشت به ربات",
-  howto:"📘 نحوه اتصال",
-  payvideo:"▶️ نحوه پرداخت (ویدیو)"
-},
+  function fmtUpdated(ts){
+    const n = Number(ts);
+    if(!Number.isFinite(n) || n <= 0) return null;
+    const d = new Date(n * 1000);
+    const pad = (k)=> String(k).padStart(2,"0");
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
 
-/* =========================
-   🇺🇿 UZBEK
-   ========================= */
-uz:{
-  bank:"To‘lov usuli",
-  details:"To‘lov rekvizitlari",
-  instr:"Yo‘riqnoma",
-  i1:"1. Aniq summani yuboring.",
-  i2:"2. Chekning rasm yoki skrinshotini oling.",
-  i3:"3. Botga qaytib chekni yuboring.",
-  i4:"4. VPN 5–10 daqiqada faollashadi.",
-  warn:"⚠️ Noto‘g‘ri summa yoki bank kechikishga olib keladi.",
-  back:"🤖 Botga qaytish",
-  howto:"📘 Qanday ulaniladi",
-  payvideo:"▶️ Qanday to‘lash (video)"
-},
+  function renderFx(amountTjs){
+    const fxBox = document.getElementById("fx");
+    fxBox.innerHTML = "";
 
-/* =========================
-   🇰🇬 KYRGYZ
-   ========================= */
-kg:{
-  bank:"Төлөм ыкмасы",
-  details:"Реквизиттер",
-  instr:"Нускама",
-  i1:"1. Так сумманы жибериңиз.",
-  i2:"2. Чектин сүрөтүн же скриншотун тартыңыз.",
-  i3:"3. Ботко кайтып чекти жөнөтүңүз.",
-  i4:"4. VPN 5–10 минутада иштейт.",
-  warn:"⚠️ Туура эмес сумма же банк кечигүүгө алып келет.",
-  back:"🤖 Ботко кайтуу",
-  howto:"📘 Кантип туташуу",
-  payvideo:"▶️ Кантип төлөө (видео)"
-}
-};
+    const rubPerTjs = safeFloat(p.get("rub_per_tjs"));
+    const tjsPerUsd = safeFloat(p.get("tjs_per_usd"));
+    const updatedAt = p.get("updated_at");
 
-function render(){
-const t=T[lang]||T.ru;
-document.getElementById("t_bank").innerText=t.bank;
-document.getElementById("t_details").innerText=t.details;
-document.getElementById("t_instr").innerText=t.instr;
-["i1","i2","i3","i4","warn"].forEach(k=>document.getElementById(k).innerText=t[k]);
+    const rub = (Number.isFinite(amountTjs) && Number.isFinite(rubPerTjs)) ? (amountTjs * rubPerTjs) : null;
+    const usd = (Number.isFinite(amountTjs) && Number.isFinite(tjsPerUsd) && tjsPerUsd !== 0) ? (amountTjs / tjsPerUsd) : null;
 
-const bank=p.get("bank");
-if(bank&&BANKS[bank]){
- document.getElementById("bank-name").innerText=BANKS[bank].name;
- document.getElementById("bank-details").innerText=BANKS[bank].details;
-}
+    const t = T[lang] || T.ru;
 
-const amount=p.get("amount");
-const cur=p.get("currency")||"";
-if(amount) document.getElementById("amount").innerText=`${amount} ${cur}`;
+    const rows = [];
+    if(Number.isFinite(rub)) rows.push({k:`${t.approx} RUB`, v:`${fmtMoney(rub,2)} ₽`});
+    if(Number.isFinite(usd)) rows.push({k:`${t.approx} USD`, v:`$${fmtMoney(usd,2)}`});
 
-document.getElementById("back").innerText=t.back;
-document.getElementById("howto").innerText=t.howto;
-document.getElementById("payvideo").innerText=t.payvideo;
+    const u = fmtUpdated(updatedAt);
+    if(u) rows.push({k:`${t.fxUpdated}`, v:`${u}`});
 
-document.getElementById("howto").onclick=()=>{
- window.open("https://t.me/AI_Pokolenia/7","_blank");
-};
+    if(rows.length === 0) return;
 
-document.getElementById("payvideo").onclick=()=>{
- window.open("https://t.me/AI_Pokolenia/8","_blank"); // ← ID поста с видео
-};
+    for(const r of rows){
+      const el = document.createElement("div");
+      el.className = "fxline";
+      el.innerHTML = `<span>${r.k}</span><b>${r.v}</b>`;
+      fxBox.appendChild(el);
+    }
+  }
 
-document.querySelectorAll(".langs button").forEach(b=>{
- b.classList.toggle("active",b.dataset.lang===lang);
- b.onclick=()=>{p.set("lang",b.dataset.lang);location.search=p.toString();}
-});
-}
-render();
+  function render(){
+    const t = T[lang] || T.ru;
+
+    document.getElementById("t_title").innerText = t.title;
+    document.getElementById("t_sub").innerText = t.sub;
+    document.getElementById("t_bank").innerText = t.bank;
+    document.getElementById("t_details").innerText = t.details;
+    document.getElementById("t_anybank").innerText = t.anybank;
+
+    document.getElementById("t_instr").innerText = t.instr;
+    document.getElementById("i1").innerText = t.i1;
+    document.getElementById("i2").innerText = t.i2;
+    document.getElementById("i3").innerText = t.i3;
+    document.getElementById("i4").innerText = t.i4;
+
+    document.getElementById("note_anybank").innerHTML = t.note_anybank;
+    document.getElementById("warn").innerText = t.warn;
+    document.getElementById("badge").innerText = t.badge;
+
+    // ✅ текст "можно из любого банка"
+    document.getElementById("anybank-text").innerHTML = t.anybank_text;
+
+    // bank
+    const bank = (p.get("bank") || "").toLowerCase();
+    if(bank && BANKS[bank]){
+      const b = BANKS[bank];
+
+      document.getElementById("bank-name").innerText = `${b.icon} ${b.name}`;
+      document.getElementById("bank-icon").innerText = bank.toUpperCase();
+
+      // ✅ показываем и счет, и телефон
+      const acc = b.account || "—";
+      const ph  = b.phone || "—";
+
+      document.getElementById("bank-details").innerText =
+        `${t.account}: ${acc}\n${t.phone}: ${ph}`;
+    }else{
+      document.getElementById("bank-name").innerText = "—";
+      document.getElementById("bank-details").innerText = "—";
+      document.getElementById("bank-icon").innerText = "—";
+    }
+
+    // amount
+    const amountRaw = p.get("amount");
+    const amount = safeFloat(amountRaw);
+    const cur = (p.get("currency") || "").toUpperCase();
+
+    if(Number.isFinite(amount)){
+      document.getElementById("amount").innerHTML = `${fmtMoney(amount,2)} <small>${cur || ""}</small>`;
+    }else{
+      document.getElementById("amount").innerText = "—";
+    }
+
+    renderFx(amount);
+
+    // buttons
+    document.getElementById("back").innerText = t.back;
+    document.getElementById("howto").innerText = t.howto;
+    document.getElementById("payvideo").innerText = t.payvideo;
+
+    document.getElementById("back").onclick = () => window.open(BOT_URL, "_blank");
+    document.getElementById("howto").onclick = () => window.open(HOWTO_URL, "_blank");
+    document.getElementById("payvideo").onclick = () => window.open(VIDEO_URL, "_blank");
+
+    // langs
+    document.querySelectorAll("#langs button").forEach(btn=>{
+      btn.classList.toggle("active", btn.dataset.lang === lang);
+      btn.onclick = ()=>{
+        p.set("lang", btn.dataset.lang);
+        location.search = p.toString();
+      };
+    });
+  }
+
+  render();
 </script>
 </body>
 </html>
