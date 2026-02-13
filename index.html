@@ -132,8 +132,56 @@
       font-weight: 800;
       font-size: 13px;
       opacity: .98;
-      white-space: pre-wrap;
       word-break: break-word;
+    }
+
+    /* clickable chips for account/phone */
+    .chips{
+      display:grid;
+      gap: 10px;
+    }
+    .chip{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      cursor: pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      transition: .12s;
+    }
+    .chip:active{ transform: scale(.99); opacity:.96; }
+    .chip .k{
+      color: rgba(234,240,255,.70);
+      font-size: 12px;
+      font-weight: 900;
+      white-space:nowrap;
+    }
+    .chip .v{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 13px;
+      font-weight: 900;
+      text-align:right;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      white-space:nowrap;
+      max-width: 260px;
+    }
+    .chip .copy{
+      opacity:.7;
+      font-size: 12px;
+      font-weight: 900;
+      white-space:nowrap;
+    }
+
+    .copy-hint{
+      margin-top: 8px;
+      font-size: 12px;
+      color: rgba(234,240,255,.62);
     }
 
     .amountBox{ padding: 16px 14px 14px; text-align:center; }
@@ -246,10 +294,35 @@
       margin-top: 14px;
     }
 
+    /* toast */
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,.72);
+      border: 1px solid rgba(255,255,255,.14);
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 900;
+      box-shadow: 0 14px 40px rgba(0,0,0,.45);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease;
+      z-index: 9999;
+    }
+    .toast.show{
+      opacity: 1;
+      transform: translateX(-50%) translateY(-4px);
+    }
+
     @media (max-width:360px){
       .title{font-size:24px;}
       .amount{font-size:32px;}
       .wrap{padding:0 2px;}
+      .chip .v{ max-width: 210px; }
     }
   </style>
 </head>
@@ -287,13 +360,27 @@
       </div>
 
       <div class="row">
-        <div style="min-width:0">
+        <div style="min-width:0; width:100%">
           <div class="label" id="t_details">Реквизиты</div>
-          <div class="value mono" id="bank-details">—</div>
+
+          <!-- ✅ вместо textarea-стиля: две кликабельные строки -->
+          <div class="chips" id="bank-details">
+            <div class="chip" id="chip-acc">
+              <div class="k" id="k_acc">—</div>
+              <div class="v" id="v_acc">—</div>
+              <div class="copy">📋</div>
+            </div>
+            <div class="chip" id="chip-ph">
+              <div class="k" id="k_ph">—</div>
+              <div class="v" id="v_ph">—</div>
+              <div class="copy">📋</div>
+            </div>
+          </div>
+
+          <div class="copy-hint" id="copy-hint">—</div>
         </div>
       </div>
 
-      <!-- ✅ новый блок: можно из любого банка -->
       <div class="row">
         <div style="min-width:0">
           <div class="label" id="t_anybank">Важно</div>
@@ -331,6 +418,8 @@
     <footer>© 2026 BahromAI_VPN</footer>
   </div>
 
+  <div class="toast" id="toast">✅ Скопировано</div>
+
 <script>
   // === Links ===
   const BOT_URL   = "https://t.me/bahromVPNbot";
@@ -340,26 +429,11 @@
   const p = new URLSearchParams(location.search);
   let lang = (p.get("lang") || "ru").toLowerCase();
 
-  // ✅ ОБНОВЛЕНО: account + phone, и общий смысл — перевод возможен из любого банка
+  // account + phone (можно платить из любого банка)
   const BANKS = {
-    dcity:{
-      icon:"🏦",
-      name:"Душанбе Сити",
-      account:"9762000149406398",
-      phone:"+992XXXXXXXXX"
-    },
-    alif:{
-      icon:"🏦",
-      name:"Алиф Банк",
-      account:"YYYY YYYY YYYY YYYY",
-      phone:"+992XXXXXXXXX"
-    },
-    sber:{
-      icon:"💳",
-      name:"Сбербанк (СБП)",
-      account:"—",
-      phone:"+7XXXXXXXXXX"
-    }
+    dcity:{ icon:"🏦", name:"Душанбе Сити", account:"9762000149406398", phone:"+992XXXXXXXXX" },
+    alif: { icon:"🏦", name:"Алиф Банк",    account:"YYYY YYYY YYYY YYYY", phone:"+992XXXXXXXXX" },
+    sber: { icon:"💳", name:"Сбербанк (СБП)", account:"—", phone:"+7XXXXXXXXXX" }
   };
 
   const T = {
@@ -384,7 +458,9 @@
       approx:"≈",
       fxUpdated:"Курс обновлён",
       account:"Счёт/карта",
-      phone:"Телефон"
+      phone:"Телефон",
+      copy_hint:"Нажмите на строку, чтобы скопировать.",
+      copied:"✅ Скопировано"
     },
     tj:{
       title:"Пардохт",
@@ -407,7 +483,9 @@
       approx:"≈",
       fxUpdated:"Курс нав шуд",
       account:"Ҳисоб/корт",
-      phone:"Телефон"
+      phone:"Телефон",
+      copy_hint:"Барои нусха гирифтан, сатри лозимиро пахш кунед.",
+      copied:"✅ Нусха шуд"
     },
     en:{
       title:"Payment",
@@ -430,7 +508,9 @@
       approx:"≈",
       fxUpdated:"FX updated",
       account:"Account/card",
-      phone:"Phone"
+      phone:"Phone",
+      copy_hint:"Tap a row to copy.",
+      copied:"✅ Copied"
     },
     fa:{
       title:"پرداخت",
@@ -453,7 +533,9 @@
       approx:"≈",
       fxUpdated:"به‌روزرسانی نرخ",
       account:"حساب/کارت",
-      phone:"تلفن"
+      phone:"تلفن",
+      copy_hint:"برای کپی، روی ردیف بزنید.",
+      copied:"✅ کپی شد"
     },
     uz:{
       title:"To‘lov",
@@ -476,7 +558,9 @@
       approx:"≈",
       fxUpdated:"Kurs yangilandi",
       account:"Hisob/karta",
-      phone:"Telefon"
+      phone:"Telefon",
+      copy_hint:"Nusxa olish uchun satrga bosing.",
+      copied:"✅ Nusxalandi"
     },
     kg:{
       title:"Төлөм",
@@ -499,7 +583,9 @@
       approx:"≈",
       fxUpdated:"Курс жаңырды",
       account:"Эсеп/карта",
-      phone:"Телефон"
+      phone:"Телефон",
+      copy_hint:"Көчүрүү үчүн сапты басыңыз.",
+      copied:"✅ Көчүрүлдү"
     }
   };
 
@@ -520,6 +606,65 @@
     const d = new Date(n * 1000);
     const pad = (k)=> String(k).padStart(2,"0");
     return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  function showToast(text){
+    const el = document.getElementById("toast");
+    if(!el) return;
+    el.innerText = text;
+    el.classList.add("show");
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(()=> el.classList.remove("show"), 1400);
+  }
+
+  async function copyText(text){
+    const s = String(text || "").trim();
+    if(!s || s === "—") return false;
+
+    try{
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(s);
+        return true;
+      }
+    }catch(e){}
+
+    try{
+      const ta = document.createElement("textarea");
+      ta.value = s;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
+    }catch(e){
+      return false;
+    }
+  }
+
+  function setDetailsUI(t, acc, ph){
+    // labels
+    document.getElementById("k_acc").innerText = t.account;
+    document.getElementById("k_ph").innerText  = t.phone;
+
+    // values
+    document.getElementById("v_acc").innerText = acc;
+    document.getElementById("v_ph").innerText  = ph;
+
+    // hint
+    document.getElementById("copy-hint").innerText = t.copy_hint;
+
+    // click copy
+    document.getElementById("chip-acc").onclick = async () => {
+      const ok = await copyText(acc);
+      if(ok) showToast(t.copied);
+    };
+    document.getElementById("chip-ph").onclick = async () => {
+      const ok = await copyText(ph);
+      if(ok) showToast(t.copied);
+    };
   }
 
   function renderFx(amountTjs){
@@ -571,49 +716,37 @@
     document.getElementById("warn").innerText = t.warn;
     document.getElementById("badge").innerText = t.badge;
 
-    // ✅ текст "можно из любого банка"
     document.getElementById("anybank-text").innerHTML = t.anybank_text;
 
     // bank
     const bank = (p.get("bank") || "").toLowerCase();
-    if(bank && BANKS[bank]){
+
+    if (bank && BANKS[bank]) {
       const b = BANKS[bank];
 
       document.getElementById("bank-name").innerText = `${b.icon} ${b.name}`;
       document.getElementById("bank-icon").innerText = bank.toUpperCase();
 
-      // bank
-const bank = (p.get("bank") || "").toLowerCase();
+      // priority: query -> BANKS -> "—"
+      const qAcc = (p.get("pay_account") || "").trim();
+      const qPh  = (p.get("pay_phone") || "").trim();
 
-if (bank && BANKS[bank]) {
-  const b = BANKS[bank];
+      const acc =
+        qAcc !== "" ? qAcc :
+        (b.account && String(b.account).trim() !== "" ? String(b.account).trim() : "—");
 
-  document.getElementById("bank-name").innerText =
-    `${b.icon} ${b.name}`;
+      const ph =
+        qPh !== "" ? qPh :
+        (b.phone && String(b.phone).trim() !== "" ? String(b.phone).trim() : "—");
 
-  document.getElementById("bank-icon").innerText =
-    bank.toUpperCase();
+      setDetailsUI(t, acc, ph);
 
-  // 🔥 приоритет: query → BANKS → "—"
-  const qAcc = (p.get("pay_account") || "").trim();
-  const qPh  = (p.get("pay_phone") || "").trim();
-
-  const acc =
-    qAcc !== "" ? qAcc :
-    (b.account && b.account.trim() !== "" ? b.account : "—");
-
-  const ph =
-    qPh !== "" ? qPh :
-    (b.phone && b.phone.trim() !== "" ? b.phone : "—");
-
-  document.getElementById("bank-details").innerText =
-    `${t.account}: ${acc}\n${t.phone}: ${ph}`;
-
-} else {
-  document.getElementById("bank-name").innerText = "—";
-  document.getElementById("bank-details").innerText = "—";
-  document.getElementById("bank-icon").innerText = "—";
-}
+    } else {
+      document.getElementById("bank-name").innerText = "—";
+      document.getElementById("bank-icon").innerText = "—";
+      setDetailsUI(t, "—", "—");
+      document.getElementById("copy-hint").innerText = "";
+    }
 
     // amount
     const amountRaw = p.get("amount");
