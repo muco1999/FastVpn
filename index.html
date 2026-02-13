@@ -582,17 +582,38 @@
       document.getElementById("bank-name").innerText = `${b.icon} ${b.name}`;
       document.getElementById("bank-icon").innerText = bank.toUpperCase();
 
-      // ✅ показываем и счет, и телефон
-      const acc = b.account || "—";
-      const ph  = b.phone || "—";
+      // bank
+const bank = (p.get("bank") || "").toLowerCase();
 
-      document.getElementById("bank-details").innerText =
-        `${t.account}: ${acc}\n${t.phone}: ${ph}`;
-    }else{
-      document.getElementById("bank-name").innerText = "—";
-      document.getElementById("bank-details").innerText = "—";
-      document.getElementById("bank-icon").innerText = "—";
-    }
+if (bank && BANKS[bank]) {
+  const b = BANKS[bank];
+
+  document.getElementById("bank-name").innerText =
+    `${b.icon} ${b.name}`;
+
+  document.getElementById("bank-icon").innerText =
+    bank.toUpperCase();
+
+  // 🔥 приоритет: query → BANKS → "—"
+  const qAcc = (p.get("pay_account") || "").trim();
+  const qPh  = (p.get("pay_phone") || "").trim();
+
+  const acc =
+    qAcc !== "" ? qAcc :
+    (b.account && b.account.trim() !== "" ? b.account : "—");
+
+  const ph =
+    qPh !== "" ? qPh :
+    (b.phone && b.phone.trim() !== "" ? b.phone : "—");
+
+  document.getElementById("bank-details").innerText =
+    `${t.account}: ${acc}\n${t.phone}: ${ph}`;
+
+} else {
+  document.getElementById("bank-name").innerText = "—";
+  document.getElementById("bank-details").innerText = "—";
+  document.getElementById("bank-icon").innerText = "—";
+}
 
     // amount
     const amountRaw = p.get("amount");
